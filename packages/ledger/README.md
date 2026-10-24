@@ -1,8 +1,7 @@
 # @ftptech/x402-canton-ledger
 
-Shared Canton ledger primitives used by both
-`@ftptech/x402-canton-facilitator` (server side) and
-`@ftptech/x402-canton-client` (payer side).
+Shared Canton ledger primitives used by `@ftptech/x402-canton-client`,
+`@ftptech/canton-agent-wallet` and the FTP facilitator.
 
 ## Install
 
@@ -10,10 +9,12 @@ Shared Canton ledger primitives used by both
 npm i @ftptech/x402-canton-ledger
 ```
 
-> Note: the `@ftp` npm scope is not final and may change before the
-> first public release (see [`docs/PUBLISHING.md`](https://github.com/sunstrike228/canton-x402/blob/main/docs/PUBLISHING.md)).
-> Pin the version you install and check the README for the current
-> package name.
+## Compatibility
+
+Canton 3.6 participants need 0.6.2 or later. 0.6.1 sends the ACS filter
+inside `eventFormat`, and 0.6.2 reads transactions through
+`/v2/updates/update-by-id`. Canton 3.6 disables the old endpoints and
+3.7 removes them.
 
 ## What's in here
 
@@ -21,9 +22,13 @@ npm i @ftptech/x402-canton-ledger
   documented gotchas (template id `#package:Module:Entity`, wrapped
   vs flat body shapes per endpoint, `disclosedContracts`, Daml
   `Int` as JSON string). Includes `submitAndWaitForTransaction`,
-  `submitAndWait`, `queryActiveContracts`, `getLedgerEnd`, and the
+  `submitAndWait`, `queryActiveContracts`, `getLedgerEnd`,
+  `getTransactionById`, `findCommandCompletions`, and the
   `interactiveSubmissionPrepare` + `interactiveSubmissionExecute`
   pair used for external-party signing.
+- **Bounded ACS reads**: `queryActiveContractsSlice` and
+  `queryActiveContractsBounded` for parties with more contracts than
+  the participant lists in one response (`ACS_DEFAULT_LIST_LIMIT`).
 - **`CantonExternalPartySigner`** + `ed25519KeyFromNodeKeyPair`
   + `signPreparedTransactionHash`: Ed25519 signing primitives over
   `/v2/interactive-submission/prepare` + `/execute`. Lets an agent
@@ -33,18 +38,18 @@ npm i @ftptech/x402-canton-ledger
   open-and-issuing mining rounds, completed transfers via
   `getUpdateById`, transfer-kind resolution (`resolveTransferKind`),
   and traffic-status. Validator-proxy + SV-direct flavors.
+- CIP-56 token helpers and prepared-transaction hash recompute.
 
-## Why a separate package
+## How the payment flow uses it
 
-Facilitator-side domain wrappers (`Cip56InstructionService`,
-`MerchantContractService`, `PreapprovalService`) live in
-`@ftptech/x402-canton-facilitator` because they encode the facilitator's
-role (Scan-read verify, MerchantContract template, preapproval
-provider). The lower-level Canton plumbing in this package is reusable
-by anyone, including any client-SDK `CantonSigner`, which uses
-`CantonExternalPartySigner` to submit a `TransferFactory_Transfer` from
-the agent's own participant.
+The facilitator relay prepares a `TransferFactory_Transfer` for the
+payer. The payer checks it with verify-before-sign from
+`@ftptech/x402-canton-core` and signs only its hash. The facilitator
+then executes it and pays the traffic. This package is the
+lower-level plumbing under those steps and is reusable by anyone.
 
 ## Project
 
-[github.com/sunstrike228/canton-x402](https://github.com/sunstrike228/canton-x402).
+Code and issues:
+[FTP-Tech-LLC/x402-canton-core](https://github.com/FTP-Tech-LLC/x402-canton-core).
+Docs: [x402-docs.ftptech.xyz](https://x402-docs.ftptech.xyz).

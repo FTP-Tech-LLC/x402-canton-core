@@ -1,8 +1,8 @@
 # @ftptech/x402-canton-core
 
 Shared TypeScript types and helpers for the Canton x402 protocol
-stack. Used by `@ftptech/x402-canton-facilitator`,
-`@ftptech/x402-canton-client`, `@ftptech/x402-canton-express`, and
+stack. Used by `@ftptech/x402-canton-client`,
+`@ftptech/canton-agent-wallet`, `@ftptech/x402-canton-express`, and
 `@ftptech/x402-canton-next`.
 
 ## Install
@@ -11,24 +11,29 @@ stack. Used by `@ftptech/x402-canton-facilitator`,
 npm i @ftptech/x402-canton-core
 ```
 
-> Note: the `@ftp` npm scope is not final and may change before the
-> first public release (see [`docs/PUBLISHING.md`](https://github.com/sunstrike228/canton-x402/blob/main/docs/PUBLISHING.md)).
-> Pin the version you install and check the README for the current
-> package name.
-
 ## What's in here
 
 - `X402ResourceInfo`, `PaymentRequirements`, `CantonPaymentPayload`,
   `FacilitatorRequest`, `VerifyResponse`, `SettleResponse`,
   `SupportedResponse`, `CantonErrorCode` types per x402 v2.
-- `CantonNetwork` CAIP-2-style identifiers (`canton:devnet`,
-  `canton:mainnet`, `canton:<global-synchronizer-id>`).
-- `encodeBase64Json` / `decodeBase64Json` + v1/v2 header-name
-  constants (`PAYMENT-REQUIRED`, `PAYMENT-SIGNATURE`,
-  `PAYMENT-RESPONSE`, `X-PAYMENT`, `X-PAYMENT-RESPONSE`).
+- `CantonNetwork` identifiers: `canton:mainnet`, `canton:testnet`,
+  `canton:devnet`. Copy the network value from the facilitator's
+  `GET /supported`.
+- `encodeBase64Json` / `decodeBase64Json` and the x402 v2 header
+  names (`PAYMENT-REQUIRED`, `PAYMENT-SIGNATURE`, `PAYMENT-RESPONSE`).
+  The v1 `X-PAYMENT` header is not supported.
+- Atomic amounts: 1 token = 10^10 atomic units for every instrument
+  (`decimalToAtomicCC`, `atomicToDecimalCC`).
+- Verify-before-sign: decodes a prepared transaction and checks it
+  against what the payer agreed to before the payer signs its hash
+  (`decodePrepared`, `assertPreparedTransferMatches` and related).
+- Merchant guards used by the middleware: `selectServerRequirements`,
+  `assertAssetInstrumentConsistency`, `RedeemedStore`.
 
 ## Project
 
-See [github.com/sunstrike228/canton-x402](https://github.com/sunstrike228/canton-x402)
-and the scheme spec at
-[`specs/scheme_exact_canton.md`](https://github.com/sunstrike228/canton-x402/blob/main/specs/scheme_exact_canton.md).
+Code and issues:
+[FTP-Tech-LLC/x402-canton-core](https://github.com/FTP-Tech-LLC/x402-canton-core).
+Docs: [x402-docs.ftptech.xyz](https://x402-docs.ftptech.xyz).
+Scheme spec:
+[`scheme_exact_canton.md`](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_canton.md).
