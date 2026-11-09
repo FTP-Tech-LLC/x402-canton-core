@@ -31,11 +31,15 @@ importers:
       '@canton-network/core-tx-visualizer':
         specifier: ~1.4.0
         version: 1.4.0
+    devDependencies:
+      '@canton-network/core-ledger-proto':
+        specifier: ~1.4.0
+        version: 1.4.0
 
 packages:
 
-  '@canton-network/core-ledger-proto@1.9.1':
-    resolution: {integrity: sha512-ol3eYkoMxUbXhPmNmI3Fqcrublo7nzJhu7uWHkNGhIG1FPgZqeEA8JXKyNB1btzcQ0QaJgzkhoNOkPurZv3njg==}
+  '@canton-network/core-ledger-proto@1.4.0':
+    resolution: {integrity: sha512-Y804Z+7xMUqGSdKttG4uVOYmki/Zc/svwDUQ0hR74tavDoTXodi25rM3SbdodY1/86MlKrBlMgUohMQMV2O9iA==}
 
   '@canton-network/core-tx-visualizer@1.4.0':
     resolution: {integrity: sha512-cZomJKN2ZxwoLhUrmGJcBELI9uM/bRZkEp40zU79gML7L+TjV6+8M2axs3XGBzdL6Jo9B5Of5p+NJLQK+FxDpg==}
@@ -1003,14 +1007,14 @@ packages:
 
 snapshots:
 
-  '@canton-network/core-ledger-proto@1.9.1':
+  '@canton-network/core-ledger-proto@1.4.0':
     dependencies:
       '@protobuf-ts/runtime': 2.11.1
       '@protobuf-ts/runtime-rpc': 2.11.1
 
   '@canton-network/core-tx-visualizer@1.4.0':
     dependencies:
-      '@canton-network/core-ledger-proto': 1.9.1
+      '@canton-network/core-ledger-proto': 1.4.0
       '@types/node': 25.9.5
       camelcase-keys: 10.0.2
 
